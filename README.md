@@ -1,27 +1,27 @@
-# BusinessManagement - AplicaciÛn ASP.NET Core con DB Contenedorizada
+# BusinessManagement - Aplicaci√≥n ASP.NET Core con DB Contenedorizada
 
-Este proyecto es una aplicaciÛn de gestiÛn empresarial (CRUD de clientes, productos, ventas, etc.) construida con:
+Este proyecto es una aplicaci√≥n de gesti√≥n empresarial (CRUD de clientes, productos, ventas, etc.) construida con:
 - ASP.NET Core (aplicando Clean Architecture y principios SOLID)
 - EF Core para acceso a datos y migraciones
 - SQL Server en contenedor Docker
-- Docker Compose para orquestaciÛn
+- Docker Compose para orquestaci√≥n
 
-El objetivo es demostrar un entorno completamente contenedorizado, con datos de demo (seeding) y f·cil despliegue.
+El objetivo es demostrar un entorno completamente contenedorizado, con datos de demo (seeding) y f√°cil despliegue.
 
 
-## Õndice
+## √çndice
 1. [Arquitectura y Diagrama](#arquitectura-y-diagrama)
 2. [Requisitos Previos](#requisitos-previos)
-3. [Instrucciones de EjecuciÛn](#instrucciones-de-ejecuciÛn)
-4. [Uso de la AplicaciÛn](#uso-de-la-aplicaciÛn)
-5. [Historias y Logros TÈcnicos](#historias-de-impacto-y-logros-tÈcnicos)
+3. [Instrucciones de Ejecuci√≥n](#instrucciones-de-ejecuci√≥n)
+4. [Uso de la Aplicaci√≥n](#uso-de-la-aplicaci√≥n)
+5. [Historias y Logros T√©cnicos](#historias-y-logros-t√©cnicos)
 6. [Posibles Mejoras Futuras](#posibles-mejoras-futuras)
-7. [CrÈditos / Referencias](#crÈditos--referencias)
+7. [Cr√©ditos / Referencias](#cr√©ditos--referencias)
 
 
 ## Arquitectura y Diagrama
 
-A continuaciÛn se muestra la arquitectura en capas y la relaciÛn entre contenedores Docker:
+A continuaci√≥n se muestra la arquitectura en capas y la relaci√≥n entre contenedores Docker:
 
 ![Arquitectura del Proyecto](./docs/architecture.png)
 
@@ -33,9 +33,9 @@ A continuaciÛn se muestra la arquitectura en capas y la relaciÛn entre contenedo
 
 - **Docker Desktop** (o Docker Engine + Docker Compose) instalado.
 - **Git** (para clonar el repositorio localmente).
-- .NET SDK 8 (o la versiÛn que este usando) si deseas compilar y correr la app fuera de Docker.
+- .NET SDK 8 (o la versi√≥n que este usando) si deseas compilar y correr la app fuera de Docker.
 
-## Instrucciones de EjecuciÛn
+## Instrucciones de Ejecuci√≥n
 
 1. Clona este repositorio:
    git clone https://github.com/jeancadev/BusinessManagement.git
@@ -55,9 +55,9 @@ A continuaciÛn se muestra la arquitectura en capas y la relaciÛn entre contenedo
    docker-compose down
 
 
-## Uso de la AplicaciÛn (Endpoints y Ejemplos)
+## Uso de la Aplicaci√≥n (Endpoints y Ejemplos)
 
-## Uso de la AplicaciÛn
+## Uso de la Aplicaci√≥n
 
 La API expone varios endpoints, por ejemplo:
 
@@ -155,37 +155,37 @@ Body (JSON):
 ### Eliminar una venta
 DELETE /api/Sales/{id}
 
-### AutenticaciÛn / Login
+### Autenticaci√≥n / Login
 POST /api/Auth/Login
 Body (JSON):
 {
   "username": "admin",
   "password": "1234"
 }
--**Nota**: La autenticaciÛn es b·sica y solo valida el usuario "admin" con contraseÒa "1234" igualmente se puede acceder con el usuario "it" y contraseÒa "9999" (Esto es solo para demostraciÛn)
+-**Nota**: La autenticaci√≥n es b√°sica y solo valida el usuario "admin" con contrase√±a "1234" igualmente se puede acceder con el usuario "it" y contrase√±a "9999" (Esto es solo para demostraci√≥n)
 
 ### Hay un seeding de datos de demo (DbInitializer.cs) que crea algunos productos y clientes iniciales.)
 
 
-## Historias y Logros TÈcnicos
+## Historias y Logros T√©cnicos
 
-- **ContenedorizaciÛn completa**: LogrÈ empaquetar la WebApi y la DB en contenedores separados, orquestados con Docker Compose, facilitando la instalaciÛn y la demo ante reclutadores.
-- **ResoluciÛn de problemas**: Originalmente, la imagen SQL 2022 daba errores por permisos no-root. MigrÈ a la imagen 2019-latest, documentÈ el proceso y resolvÌ el conflicto.
-- **Arquitectura Limpia y SOLID**: SeparÈ en capas (Domain, Application, Infrastructure, WebApi) para mantener mantenibilidad y testabilidad.
-- **Seeding de datos**: ImplementÈ un DbInitializer que inyecta clientes y productos b·sicos al arrancar. Esto permite que cualquiera pruebe la API sin pasos adicionales.
+- **Contenedorizaci√≥n completa**: Logr√© empaquetar la WebApi y la DB en contenedores separados, orquestados con Docker Compose, facilitando la instalaci√≥n y la demo ante reclutadores.
+- **Resoluci√≥n de problemas**: Originalmente, la imagen SQL 2022 daba errores por permisos no-root. Migr√© a la imagen 2019-latest, document√© el proceso y resolv√≠ el conflicto.
+- **Arquitectura Limpia y SOLID**: Separ√© en capas (Domain, Application, Infrastructure, WebApi) para mantener mantenibilidad y testabilidad.
+- **Seeding de datos**: Implement√© un DbInitializer que inyecta clientes y productos b√°sicos al arrancar. Esto permite que cualquiera pruebe la API sin pasos adicionales.
 - **Futuras mejoras**:
-  - AÒadir un volumen persistente para conservar datos entre reinicios de contenedores.
-  - Implementar un pipeline de CI/CD para automatizar la construcciÛn y publicaciÛn de im·genes en Docker Hub.
+  - A√±adir un volumen persistente para conservar datos entre reinicios de contenedores.
+  - Implementar un pipeline de CI/CD para automatizar la construcci√≥n y publicaci√≥n de im√°genes en Docker Hub.
 
 
 ## Posibles Mejoras Futuras
 
 - **Volumen persistente**: Montar `/var/opt/mssql/data` en un volumen para no perder datos.
-- **AutenticaciÛn JWT**: Si mas adelante se requiere seguridad real, implementar un AuthController con JWT.
+- **Autenticaci√≥n JWT**: Si mas adelante se requiere seguridad real, implementar un AuthController con JWT.
 - **Despliegue en la nube**: Subir la imagen a Azure Container Registry y ejecutar en un Azure App Service o Kubernetes.
-- **Pruebas Unitarias**: AÒadir un proyecto `BusinessManagement.Tests` con xUnit para validar la lÛgica de dominio.
+- **Pruebas Unitarias**: A√±adir un proyecto `BusinessManagement.Tests` con xUnit para validar la l√≥gica de dominio.
 
-## CrÈditos / Referencias
+## Cr√©ditos / Referencias
 
 - [EF Core Docs](https://learn.microsoft.com/ef/core)
 - [Docker Docs](https://docs.docker.com/)
