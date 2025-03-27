@@ -190,5 +190,3 @@ Body (JSON):
 - [EF Core Docs](https://learn.microsoft.com/ef/core)
 - [Docker Docs](https://docs.docker.com/)
 - [SQL Server en contenedores](https://learn.microsoft.com/sql/linux/sql-server-linux-overview)
-
-![Arquitectura del Proyecto](./docs/architecture.png)
