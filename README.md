@@ -9,7 +9,7 @@ Este proyecto es una aplicación de gestión empresarial (CRUD de clientes, prod
 El objetivo es demostrar un entorno completamente contenedorizado, con datos de demo (seeding) y fácil despliegue.
 
 ### Docker Hub
-La imagen está disponible en [Docker Hub](https://hub.docker.com/r/26jeanca/businessmanagement-webapi:v1)
+La imagen está disponible en Docker Hub: 26jeanca/businessmanagement-webapi:v1
 
 
 ## Índice
