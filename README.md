@@ -1,27 +1,30 @@
-# BusinessManagement - Aplicaci�n ASP.NET Core con DB Contenedorizada
+# BusinessManagement - Aplicación ASP.NET Core con DB Contenedorizada
 
-Este proyecto es una aplicaci�n de gesti�n empresarial (CRUD de clientes, productos, ventas, etc.) construida con:
+Este proyecto es una aplicación de gestión empresarial (CRUD de clientes, productos, ventas, etc.) construida con:
 - ASP.NET Core (aplicando Clean Architecture y principios SOLID)
 - EF Core para acceso a datos y migraciones
 - SQL Server en contenedor Docker
-- Docker Compose para orquestaci�n
+- Docker Compose para orquestación
 
-El objetivo es demostrar un entorno completamente contenedorizado, con datos de demo (seeding) y f�cil despliegue.
+El objetivo es demostrar un entorno completamente contenedorizado, con datos de demo (seeding) y fácil despliegue.
+
+### Docker Hub
+La imagen está disponible en [Docker Hub:](https://hub.docker.com/repository/docker/26jeanca/businessmanagement-webapi/general)
 
 
-## �ndice
+## Índice
 1. [Arquitectura y Diagrama](#arquitectura-y-diagrama)
 2. [Requisitos Previos](#requisitos-previos)
-3. [Instrucciones de Ejecuci�n](#instrucciones-de-ejecuci�n)
-4. [Uso de la Aplicaci�n](#uso-de-la-aplicaci�n)
-5. [Historias y Logros T�cnicos](#historias-de-impacto-y-logros-t�cnicos)
+3. [Instrucciones de Ejecución](#instrucciones-de-ejecución)
+4. [Uso de la Aplicación](#uso-de-la-aplicación)
+5. [Historias y Logros Técnicos](#historias-y-logros-técnicos)
 6. [Posibles Mejoras Futuras](#posibles-mejoras-futuras)
-7. [Cr�ditos / Referencias](#cr�ditos--referencias)
+7. [Créditos / Referencias](#créditos--referencias)
 
 
 ## Arquitectura y Diagrama
 
-A continuaci�n se muestra la arquitectura en capas y la relaci�n entre contenedores Docker:
+A continuación se muestra la arquitectura en capas y la relación entre contenedores Docker:
 
 ![Arquitectura del Proyecto]
 graph TD
@@ -75,9 +78,9 @@ graph TD
 
 - **Docker Desktop** (o Docker Engine + Docker Compose) instalado.
 - **Git** (para clonar el repositorio localmente).
-- .NET SDK 8 (o la versi�n que este usando) si deseas compilar y correr la app fuera de Docker.
+- .NET SDK 8 (o la versión que este usando) si deseas compilar y correr la app fuera de Docker.
 
-## Instrucciones de Ejecuci�n
+## Instrucciones de Ejecución
 
 1. Clona este repositorio:
    git clone https://github.com/jeancadev/BusinessManagement.git
@@ -97,9 +100,9 @@ graph TD
    docker-compose down
 
 
-## Uso de la Aplicaci�n (Endpoints y Ejemplos)
+## Uso de la Aplicación (Endpoints y Ejemplos)
 
-## Uso de la Aplicaci�n
+## Uso de la Aplicación
 
 La API expone varios endpoints, por ejemplo:
 
@@ -197,37 +200,37 @@ Body (JSON):
 ### Eliminar una venta
 DELETE /api/Sales/{id}
 
-### Autenticaci�n / Login
+### Autenticación / Login
 POST /api/Auth/Login
 Body (JSON):
 {
   "username": "admin",
   "password": "1234"
 }
--**Nota**: La autenticaci�n es b�sica y solo valida el usuario "admin" con contrase�a "1234" igualmente se puede acceder con el usuario "it" y contrase�a "9999" (Esto es solo para demostraci�n)
+-**Nota**: La autenticación es básica y solo valida el usuario "admin" con contraseña "1234" igualmente se puede acceder con el usuario "it" y contraseña "9999" (Esto es solo para demostración)
 
 ### Hay un seeding de datos de demo (DbInitializer.cs) que crea algunos productos y clientes iniciales.)
 
 
-## Historias y Logros T�cnicos
+## Historias y Logros Técnicos
 
-- **Contenedorizaci�n completa**: Logr� empaquetar la WebApi y la DB en contenedores separados, orquestados con Docker Compose, facilitando la instalaci�n y la demo ante reclutadores.
-- **Resoluci�n de problemas**: Originalmente, la imagen SQL 2022 daba errores por permisos no-root. Migr� a la imagen 2019-latest, document� el proceso y resolv� el conflicto.
-- **Arquitectura Limpia y SOLID**: Separ� en capas (Domain, Application, Infrastructure, WebApi) para mantener mantenibilidad y testabilidad.
-- **Seeding de datos**: Implement� un DbInitializer que inyecta clientes y productos b�sicos al arrancar. Esto permite que cualquiera pruebe la API sin pasos adicionales.
+- **Contenedorización completa**: Logré empaquetar la WebApi y la DB en contenedores separados, orquestados con Docker Compose, facilitando la instalación y la demo ante reclutadores.
+- **Resolución de problemas**: Originalmente, la imagen SQL 2022 daba errores por permisos no-root. Migré a la imagen 2019-latest, documenté el proceso y resolví el conflicto.
+- **Arquitectura Limpia y SOLID**: Separé en capas (Domain, Application, Infrastructure, WebApi) para mantener mantenibilidad y testabilidad.
+- **Seeding de datos**: Implementé un DbInitializer que inyecta clientes y productos básicos al arrancar. Esto permite que cualquiera pruebe la API sin pasos adicionales.
 - **Futuras mejoras**:
-  - A�adir un volumen persistente para conservar datos entre reinicios de contenedores.
-  - Implementar un pipeline de CI/CD para automatizar la construcci�n y publicaci�n de im�genes en Docker Hub.
+  - Añadir un volumen persistente para conservar datos entre reinicios de contenedores.
+  - Implementar un pipeline de CI/CD para automatizar la construcción y publicación de imágenes en Docker Hub.
 
 
 ## Posibles Mejoras Futuras
 
 - **Volumen persistente**: Montar `/var/opt/mssql/data` en un volumen para no perder datos.
-- **Autenticaci�n JWT**: Si mas adelante se requiere seguridad real, implementar un AuthController con JWT.
+- **Autenticación JWT**: Si mas adelante se requiere seguridad real, implementar un AuthController con JWT.
 - **Despliegue en la nube**: Subir la imagen a Azure Container Registry y ejecutar en un Azure App Service o Kubernetes.
-- **Pruebas Unitarias**: A�adir un proyecto `BusinessManagement.Tests` con xUnit para validar la l�gica de dominio.
+- **Pruebas Unitarias**: Añadir un proyecto `BusinessManagement.Tests` con xUnit para validar la lógica de dominio.
 
-## Cr�ditos / Referencias
+## Créditos / Referencias
 
 - [EF Core Docs](https://learn.microsoft.com/ef/core)
 - [Docker Docs](https://docs.docker.com/)
