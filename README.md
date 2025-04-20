@@ -34,33 +34,81 @@ Imagen disponible en [Docker Hub](https://hub.docker.com/repository/docker/26jea
 
 ## Arquitectura y Diagrama
 
-La solución sigue Clean Architecture y se ejecuta en un entorno Dockerizado. El siguiente diagrama ilustra la arquitectura general:
+El proyecto sigue los principios de Clean Architecture, organizando el código en capas con responsabilidades específicas y manteniendo las dependencias hacia el centro del diagrama:
 
 ```mermaid
-graph TD
-    WebApi[WebApi (ASP.NET Core)]
-    SQL[SQL Server 2019]
-    Swagger[Swagger UI]
-    Auth[Autenticación Básica]
-    AppLayer[Application Layer]
-    Domain[Domain Layer]
-    Infra[Infrastructure Layer]
+flowchart TB
+    subgraph Presentación
+        API[API Controllers]
+        Swagger[Swagger UI]
+        Auth[Authentication]
+        API --> Swagger
+        Auth --> API
+    end
 
-    WebApi -- "API REST" --> Swagger
-    WebApi -- "EF Core TCP 1433" --> SQL
-    WebApi -- "Usa" --> AppLayer
-    AppLayer -- "Usa" --> Domain
-    WebApi -- "Implementa" --> Infra
-    Infra -- "Accede" --> SQL
-    Auth -- "Protege" --> WebApi
+    subgraph Application
+        Services[Application Services]
+        DTOs[DTOs / ViewModels]
+        Commands[Commands / Queries]
+    end
+
+    subgraph Domain
+        Entities[Domain Entities]
+        ValueObj[Value Objects]
+        Rules[Business Rules]
+    end
+
+    subgraph Infrastructure
+        Repos[Repositories]
+        DB[(SQL Server)]
+        EF[Entity Framework]
+    end
+
+    API --> Services
+    Services --> DTOs
+    Services --> Commands
+    Commands --> Entities
+    Services --> Entities
+    Entities --> ValueObj
+    Entities --> Rules
+    Repos --> DB
+    EF --> DB
+    Services --> Repos
 ```
 
-- **WebApi:** Expone endpoints REST, aplica autenticación y contiene la lógica de presentación.
-- **Application Layer:** Servicios, DTOs, lógica de aplicación.
-- **Domain Layer:** Entidades, lógica de dominio, value objects.
-- **Infrastructure Layer:** Repositorios, DbContext, migraciones, inicialización de datos.
-- **SQL Server:** Base de datos persistente en contenedor.
-- **Swagger UI:** Interfaz para probar la API.
+### Descripción de Capas
+
+1. **Capa de Presentación**
+   - Controllers REST API
+   - Filtros y Middleware
+   - Autenticación básica
+   - Documentación Swagger
+
+2. **Capa de Aplicación**
+   - Servicios de aplicación
+   - DTOs y ViewModels
+   - Comandos (Commands)
+   - Consultas (Queries)
+   - Mapeos AutoMapper
+
+3. **Capa de Dominio**
+   - Entidades core (Customer, Product, Sale, etc.)
+   - Objetos de valor
+   - Reglas de negocio
+   - Interfaces de repositorio
+
+4. **Capa de Infraestructura**
+   - Implementación de repositorios
+   - Contexto de EF Core
+   - Migraciones
+   - Configuración de SQL Server
+
+### Flujo de Datos
+1. Las peticiones HTTP llegan a los controllers
+2. Los controllers usan servicios de aplicación
+3. Los servicios implementan la lógica de negocio usando entidades
+4. Los repositorios persisten los datos en SQL Server
+5. Las respuestas son mapeadas a DTOs y devueltas al cliente
 
 ---
 
