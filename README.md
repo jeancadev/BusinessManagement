@@ -4,7 +4,7 @@
 ![.NET](https://img.shields.io/badge/.NET-8.0-blueviolet?logo=dotnet)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-Aplicación de gestión empresarial (CRUD de clientes, productos, ventas, inventarios) basada en Clean Architecture, contenedores Docker y SQL Server. Incluye autenticación, seeding de datos y despliegue sencillo.
+Aplicación de gestión empresarial (CRUD de clientes, productos, ventas, inventarios) basada en Clean Architecture, contenedores Docker y SQL Server. Incluye autenticación con JWT, seeding de datos y despliegue sencillo.
 
 ---
 
@@ -224,7 +224,6 @@ POST /api/Sales
 ## Mejoras Futuras
 
 - Volumen persistente para SQL Server
-- Autenticación JWT
 - CI/CD con GitHub Actions
 - Despliegue en Azure/Kubernetes
 - Más cobertura de pruebas
