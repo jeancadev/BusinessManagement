@@ -4,7 +4,7 @@
 ![.NET](https://img.shields.io/badge/.NET-8.0-blueviolet?logo=dotnet)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-Aplicación de gestión empresarial (CRUD de clientes, productos, ventas, inventarios) basada en Clean Architecture, contenedores Docker y SQL Server. Incluye autenticación básica, seeding de datos y despliegue sencillo.
+Aplicación de gestión empresarial (CRUD de clientes, productos, ventas, inventarios) basada en Clean Architecture, contenedores Docker y SQL Server. Incluye autenticación, seeding de datos y despliegue sencillo.
 
 ---
 
@@ -38,17 +38,21 @@ La solución sigue Clean Architecture y se ejecuta en un entorno Dockerizado. El
 
 ```mermaid
 graph TD
-    subgraph Docker-Compose
-        A[WebApi (ASP.NET Core)] -- EF Core TCP 1433 --> B[(SQL Server 2019)]
-        A -- API REST --> C[Cliente/Swagger UI]
-        B -- Volumen Persistente --> D[(/var/opt/mssql/data)]
-        A -- Seeding Inicial --> B
-        E[Autenticación Básica] -- Protege --> A
-    end
-    A -. Usa .-> F[Application Layer]
-    F -. Usa .-> G[Domain Layer]
-    A -. Implementa .-> H[Infrastructure Layer]
-    H -. Accede .-> B
+    WebApi[WebApi (ASP.NET Core)]
+    SQL[SQL Server 2019]
+    Swagger[Swagger UI]
+    Auth[Autenticación Básica]
+    AppLayer[Application Layer]
+    Domain[Domain Layer]
+    Infra[Infrastructure Layer]
+
+    WebApi -- "API REST" --> Swagger
+    WebApi -- "EF Core TCP 1433" --> SQL
+    WebApi -- "Usa" --> AppLayer
+    AppLayer -- "Usa" --> Domain
+    WebApi -- "Implementa" --> Infra
+    Infra -- "Accede" --> SQL
+    Auth -- "Protege" --> WebApi
 ```
 
 - **WebApi:** Expone endpoints REST, aplica autenticación y contiene la lógica de presentación.
