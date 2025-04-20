@@ -1,176 +1,149 @@
-# BusinessManagement - Aplicación ASP.NET Core con DB Contenedorizada
+# BusinessManagement - Aplicación ASP.NET Core Contenedorizada
 
-Este proyecto es una aplicación de gestión empresarial (CRUD de clientes, productos, ventas, etc.) construida con:
-- ASP.NET Core (aplicando Clean Architecture y principios SOLID)
-- EF Core para acceso a datos y migraciones
-- SQL Server en contenedor Docker
-- Docker Compose para orquestación
+![Docker](https://img.shields.io/badge/docker-ready-blue?logo=docker)
+![.NET](https://img.shields.io/badge/.NET-8.0-blueviolet?logo=dotnet)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-El objetivo es demostrar un entorno completamente contenedorizado, con datos de demo (seeding) y fácil despliegue.
+Aplicación de gestión empresarial (CRUD de clientes, productos, ventas, inventarios) basada en Clean Architecture, contenedores Docker y SQL Server. Incluye autenticación básica, seeding de datos y despliegue sencillo.
 
-### Docker Hub
-La imagen está disponible en [Docker Hub:](https://hub.docker.com/repository/docker/26jeanca/businessmanagement-webapi/general)
+---
 
+## Tabla de Contenidos
+1. [Descripción General](#descripción-general)
+2. [Arquitectura y Diagrama](#arquitectura-y-diagrama)
+3. [Requisitos Previos](#requisitos-previos)
+4. [Instalación y Ejecución](#instalación-y-ejecución)
+5. [Uso de la API](#uso-de-la-api)
+6. [Pruebas](#pruebas)
+7. [Mejoras Futuras](#mejoras-futuras)
+8. [Créditos y Referencias](#créditos-y-referencias)
 
-## Índice
-1. [Arquitectura y Diagrama](#arquitectura-y-diagrama)
-2. [Requisitos Previos](#requisitos-previos)
-3. [Instrucciones de Ejecución](#instrucciones-de-ejecución)
-4. [Uso de la Aplicación](#uso-de-la-aplicación)
-5. [Historias y Logros Técnicos](#historias-y-logros-técnicos)
-6. [Posibles Mejoras Futuras](#posibles-mejoras-futuras)
-7. [Créditos / Referencias](#créditos--referencias)
+---
 
+## Descripción General
+
+- **Framework:** ASP.NET Core 8, Clean Architecture, SOLID
+- **Persistencia:** EF Core, SQL Server 2019 (contenedor Docker)
+- **Orquestación:** Docker Compose
+- **Autenticación:** Básica (usuarios demo)
+- **Seeding:** Datos de ejemplo para pruebas inmediatas
+
+Imagen disponible en [Docker Hub](https://hub.docker.com/repository/docker/26jeanca/businessmanagement-webapi/general)
+
+---
 
 ## Arquitectura y Diagrama
 
-A continuación se muestra la arquitectura en capas y la relación entre contenedores Docker:
+La solución sigue Clean Architecture y se ejecuta en un entorno Dockerizado. El siguiente diagrama ilustra la arquitectura general:
 
-![Arquitectura del Proyecto]
+```mermaid
 graph TD
-    subgraph "Docker Compose Environment"
-        DC[Docker Compose] --> |orchestrates| WebContainer
-        DC --> |orchestrates| DBContainer
-        
-        subgraph "WebContainer: ASP.NET Core"
-            WebApp[Web API Container<br>Puerto: 8090:80] --> |contains| PL
-            
-            subgraph "Clean Architecture"
-                PL[Presentation Layer<br>- Controllers<br>- Middleware<br>- Swagger] --> |uses| AL
-                AL[Application Layer<br>- Services<br>- DTOs<br>- Interfaces] --> |uses| DL
-                DL[Domain Layer<br>- Entities<br>- Value Objects<br>- Domain Services] 
-                IL[Infrastructure Layer<br>- Repositories<br>- DbContext<br>- Migrations<br>- DbInitializer] --> |implements| AL
-                IL --> |depends on| DL
-            end
-        end
-        
-        subgraph "DBContainer: SQL Server 2019"
-            DB[(SQL Server 2019<br>Puerto: 1433:1433)] --> |contains| Tables
-            Tables[Tables<br>- Products<br>- Customers<br>- Sales<br>- SaleItems]
-            Vol[(Volume<br>/var/opt/mssql/data)]
-            DB --- Vol
-        end
-        
-        WebApp --> |EF Core<br>TCP 1433| DB
-        WebApp --> |API Requests| Client
-        Client[Client/Browser<br>- Swagger UI]
-        
-        subgraph "Authentication"
-            Auth[Basic Auth<br>- admin/1234<br>- it/9999] --> |secures| WebApp
-        end
-        
-        subgraph "Initial Data"
-            Seed[Seeding Process<br>- Demo Products<br>- Demo Customers] --> |populates| DB
-        end
+    subgraph Docker-Compose
+        A[WebApi (ASP.NET Core)] -- EF Core TCP 1433 --> B[(SQL Server 2019)]
+        A -- API REST --> C[Cliente/Swagger UI]
+        B -- Volumen Persistente --> D[(/var/opt/mssql/data)]
+        A -- Seeding Inicial --> B
+        E[Autenticación Básica] -- Protege --> A
     end
-    
-    style WebContainer fill:#d0e0ff,stroke:#0066cc
-    style DBContainer fill:#ffe0d0,stroke:#cc6600
-    style DC fill:#d0ffd0,stroke:#00cc66
-    style Auth fill:#ffd0e0,stroke:#cc0066
-    style Seed fill:#e0d0ff,stroke:#6600cc
+    A -. Usa .-> F[Application Layer]
+    F -. Usa .-> G[Domain Layer]
+    A -. Implementa .-> H[Infrastructure Layer]
+    H -. Accede .-> B
+```
 
-- El contenedor `webapi` ejecuta ASP.NET Core y EF Core.
-- El contenedor `db` corre SQL Server 2019.
-- Docker Compose orquesta ambos contenedores y expone los puertos.
+- **WebApi:** Expone endpoints REST, aplica autenticación y contiene la lógica de presentación.
+- **Application Layer:** Servicios, DTOs, lógica de aplicación.
+- **Domain Layer:** Entidades, lógica de dominio, value objects.
+- **Infrastructure Layer:** Repositorios, DbContext, migraciones, inicialización de datos.
+- **SQL Server:** Base de datos persistente en contenedor.
+- **Swagger UI:** Interfaz para probar la API.
+
+---
 
 ## Requisitos Previos
 
-- **Docker Desktop** (o Docker Engine + Docker Compose) instalado.
-- **Git** (para clonar el repositorio localmente).
-- .NET SDK 8 (o la versión que este usando) si deseas compilar y correr la app fuera de Docker.
+- **Docker Desktop** (o Docker Engine + Docker Compose)
+- **Git**
+- **.NET SDK 8** (solo si deseas compilar fuera de Docker)
 
-## Instrucciones de Ejecución
+---
 
-1. Clona este repositorio:
+## Instalación y Ejecución
+
+1. Clona el repositorio:
+   ```sh
    git clone https://github.com/jeancadev/BusinessManagement.git
    cd BusinessManagement
-
-2. Ejecuta Docker Compose:
+   ```
+2. Construye y levanta los contenedores:
+   ```sh
    docker-compose up --build -d
-(Esto compilara la imagen de la WebApi y levantara el contenedor de SQL Server)
-
-3. Verifica contenedores en ejecucion:
+   ```
+3. Verifica los contenedores:
+   ```sh
    docker-compose ps
-
-4. Accede a la WebApi: http://localhost:8090/swagger
-   (Swagger UI para probar los endpoints)
-
-5. Detener la ejecucion:
+   ```
+4. Accede a la API: [http://localhost:8090/swagger](http://localhost:8090/swagger)
+5. Detén la ejecución:
+   ```sh
    docker-compose down
+   ```
 
+---
 
-## Uso de la Aplicación (Endpoints y Ejemplos)
+## Uso de la API
 
-## Uso de la Aplicación
+### Autenticación
+- Usuario: `admin` / Contraseña: `1234`
+- Usuario: `it` / Contraseña: `9999`
 
-La API expone varios endpoints, por ejemplo:
+### Endpoints Principales
 
-### Obtener todos los productos
-GET /api/products
+#### Productos
+- `GET    /api/Products` — Listar productos
+- `POST   /api/Products` — Crear producto
+- `GET    /api/Products/{id}` — Obtener producto
+- `PUT    /api/Products/{id}` — Actualizar producto
+- `DELETE /api/Products/{id}` — Eliminar producto
 
-### Crear un producto
-POST /api/Products 
-Body (JSON): 
-{ 
-	"name": "Laptop",
-	"description": "Dell Inspiron 15",
-	"price": 999.99,
-	"stock": 10
-}
+#### Clientes
+- `GET    /api/Customers` — Listar clientes
+- `POST   /api/Customers` — Crear cliente
+- `GET    /api/Customers/{id}` — Obtener cliente
+- `PUT    /api/Customers/{id}` — Actualizar cliente
+- `DELETE /api/Customers/{id}` — Eliminar cliente
 
-### Obtener un producto por ID
-GET /api/Products/{id}
+#### Ventas
+- `GET    /api/Sales` — Listar ventas
+- `POST   /api/Sales` — Crear venta
+- `GET    /api/Sales/{id}` — Obtener venta
+- `PUT    /api/Sales/{id}` — Actualizar venta
+- `DELETE /api/Sales/{id}` — Eliminar venta
 
-### Actualizar un producto
-PUT /api/Products/{id}
-Body (JSON):
+#### Ejemplo de creación de producto
+```json
+POST /api/Products
 {
-	"name": "Laptop Updated",
-	"description": "Dell Inspiron 15 Updated",
-	"price": 1099.99,
-	"stock": 7
+  "name": "Laptop",
+  "description": "Dell Inspiron 15",
+  "price": 999.99,
+  "stock": 10
 }
+```
 
-### Eliminar un producto
-DELETE /api/Products/{id}
-
-### Customers
-GET /api/Customers
-
-### Obtener un cliente por ID
-GET /api/Customers/{id}
-
-### Crear un cliente
+#### Ejemplo de creación de cliente
+```json
 POST /api/Customers
-Body (JSON):
 {
   "firstName": "Pedro",
   "lastName": "Guzman",
   "email": "pedro@pedro.com"
 }
+```
 
-### Actualizar un cliente
-PUT /api/Customers/{id}
-Body (JSON):
-{
-  "firstName": "Pedro Updated",
-  "lastName": "Guzman Updated",
-  "email": "pedro.updated@pedro.com"
-}
-
-### Eliminar un cliente
-DELETE /api/Customers/{id}
-
-### Sales
-GET /api/Sales
-
-### Obtener una venta por ID
-GET /api/Sales/{id}
-
-### Crear una venta
+#### Ejemplo de creación de venta
+```json
 POST /api/Sales
-Body (JSON):
 {
   "customerId": "GUID-del-cliente",
   "saleDate": "2025-03-22T10:00:00",
@@ -182,55 +155,31 @@ Body (JSON):
     }
   ]
 }
+```
 
-### Actualizar una venta
-PUT /api/Sales/{id}
-Body (JSON):
-{
-  "saleDate": "2025-03-22T10:00:00",
-  "items": [
-	{
-	  "productId": "GUID-del-producto",
-	  "quantity": 1,
-	  "unitPrice": 800.00
-	}
-  ]
-}
+---
 
-### Eliminar una venta
-DELETE /api/Sales/{id}
+## Pruebas
 
-### Autenticación / Login
-POST /api/Auth/Login
-Body (JSON):
-{
-  "username": "admin",
-  "password": "1234"
-}
--**Nota**: La autenticación es básica y solo valida el usuario "admin" con contraseña "1234" igualmente se puede acceder con el usuario "it" y contraseña "9999" (Esto es solo para demostración)
+- El proyecto incluye pruebas unitarias en `BusinessManagement.UnitTests`.
+- Para ejecutarlas localmente:
+  ```sh
+  dotnet test BusinessManagement.UnitTests/BusinessManagement.UnitTests.csproj
+  ```
 
-### Hay un seeding de datos de demo (DbInitializer.cs) que crea algunos productos y clientes iniciales.)
+---
 
+## Mejoras Futuras
 
-## Historias y Logros Técnicos
+- Volumen persistente para SQL Server
+- Autenticación JWT
+- CI/CD con GitHub Actions
+- Despliegue en Azure/Kubernetes
+- Más cobertura de pruebas
 
-- **Contenedorización completa**: Logré empaquetar la WebApi y la DB en contenedores separados, orquestados con Docker Compose, facilitando la instalación y la demo ante reclutadores.
-- **Resolución de problemas**: Originalmente, la imagen SQL 2022 daba errores por permisos no-root. Migré a la imagen 2019-latest, documenté el proceso y resolví el conflicto.
-- **Arquitectura Limpia y SOLID**: Separé en capas (Domain, Application, Infrastructure, WebApi) para mantener mantenibilidad y testabilidad.
-- **Seeding de datos**: Implementé un DbInitializer que inyecta clientes y productos básicos al arrancar. Esto permite que cualquiera pruebe la API sin pasos adicionales.
-- **Futuras mejoras**:
-  - Añadir un volumen persistente para conservar datos entre reinicios de contenedores.
-  - Implementar un pipeline de CI/CD para automatizar la construcción y publicación de imágenes en Docker Hub.
+---
 
-
-## Posibles Mejoras Futuras
-
-- **Volumen persistente**: Montar `/var/opt/mssql/data` en un volumen para no perder datos.
-- **Autenticación JWT**: Si mas adelante se requiere seguridad real, implementar un AuthController con JWT.
-- **Despliegue en la nube**: Subir la imagen a Azure Container Registry y ejecutar en un Azure App Service o Kubernetes.
-- **Pruebas Unitarias**: Añadir un proyecto `BusinessManagement.Tests` con xUnit para validar la lógica de dominio.
-
-## Créditos / Referencias
+## Créditos y Referencias
 
 - [EF Core Docs](https://learn.microsoft.com/ef/core)
 - [Docker Docs](https://docs.docker.com/)
