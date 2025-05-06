@@ -28,7 +28,7 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal BusinessManagement.UnitTests/BusinessManagement.UnitTests.csproj
 
-    # Add Docker steps below, only run on push to main
+    # Add Docker steps below, only run on push to main.
     - name: Log in to Docker Hub
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: docker/login-action@v3
