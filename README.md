@@ -3,6 +3,7 @@
 ![Docker](https://img.shields.io/badge/docker-ready-blue?logo=docker)
 ![.NET](https://img.shields.io/badge/.NET-8.0-blueviolet?logo=dotnet)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![GitHub Actions Workflow Status](https://github.com/jeancadev/BusinessManagement/actions/workflows/dotnet-build-test.yml/badge.svg)
 
 Business management application (CRUD for customers, products, sales, inventory) based on Clean Architecture, Docker containers, and SQL Server. Includes JWT authentication, data seeding, and easy deployment.
 
@@ -224,7 +225,6 @@ POST /api/Sales
 ## Future Improvements
 
 - Persistent volume for SQL Server
-- CI/CD with GitHub Actions
 - Deployment to Azure/Kubernetes
 - More test coverage
 
